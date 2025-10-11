@@ -19,7 +19,7 @@ ENV PYTHONUNBUFFERED=1 \
 # Install build dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    libexpat1 && \
+    libexpat1 git && \
     rm -rf /var/lib/apt/lists/*
 
 # Create and activate virtual environment
