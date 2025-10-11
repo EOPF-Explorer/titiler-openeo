@@ -190,7 +190,11 @@ class LazyZarrRasterStack(Dict[str, ImageData]):
 
 
 def load_zarr(
-    url: str, spatial_extent: Optional[Dict] = None, width: Optional[int] = None, height: Optional[int] = None, options: Optional[Dict] = None
+    url: str,
+    spatial_extent: Optional[Dict] = None,
+    width: Optional[int] = None,
+    height: Optional[int] = None,
+    options: Optional[Dict] = None,
 ) -> RasterStack:
     """Load data from a Zarr store.
 
