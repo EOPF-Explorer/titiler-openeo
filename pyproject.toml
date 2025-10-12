@@ -39,7 +39,8 @@ dependencies = [
     "pydantic-settings~=2.0",
     "jsonpath-ng~=1.7.0",
     "titiler-eopf@git+https://github.com/EOPF-Explorer/titiler-eopf.git",
-    "xarray>=2025.9.0"
+    "xarray>=2025.9.0",
+    "fastapi>=0.118.3,<0.119.0",
 ]
 
 [project.optional-dependencies]
