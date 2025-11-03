@@ -2,13 +2,17 @@
 
 Issues and pull requests are more than welcome: https://github.com/sentinel-hub/titiler-openeo/issues
 
+We recommand using [`uv`](https://docs.astral.sh/uv) as project manager for development.
+
+See https://docs.astral.sh/uv/getting-started/installation/ for installation 
+
 **dev install**
 
 ```bash
 git clone https://github.com/sentinel-hub/titiler-openeo.git
 cd titiler-openeo
 
-python -m pip install -e ".[test,dev]"
+uv sync
 ```
 
 **Authentication Testing with Keycloak**
@@ -66,13 +70,13 @@ The Keycloak server will be available at http://localhost:8082 for testing OIDC 
 This repo is set to use `pre-commit` to run *isort*, *flake8*, *pydocstring*, *black* ("uncompromising Python code formatter") and mypy when committing new code.
 
 ```bash
-pre-commit install
+uv run pre-commit install
 ```
 
 ### Run tests
 
 ```
-python -m pytest --cov=titiler.openeo --cov-report=xml --cov-append --cov-report=term-missing
+uv run python -m pytest --cov=titiler.openeo --cov-report=xml --cov-append --cov-report=term-missing
 ```
 
 ### Docs
@@ -80,13 +84,15 @@ python -m pytest --cov=titiler.openeo --cov-report=xml --cov-append --cov-report
 ```bash
 git clone https://github.com/sentinel-hub/titiler-openeo.git
 cd titiler-openeo
-python -m pip install -e ".[docs]"
+
+# Build docs
+uv run --group docs mkdocs build -f docs/mkdocs.yml
 ```
 
 Hot-reloading docs:
 
 ```bash
-mkdocs serve -f docs/mkdocs.yml
+uv run --group docs mkdocs serve -f docs/mkdocs.yml --livereload
 ```
 
 To manually deploy docs (note you should never need to do this because Github

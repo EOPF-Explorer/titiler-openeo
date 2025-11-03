@@ -8,7 +8,7 @@ from typing import Any, Dict, Optional, Union
 
 import numpy
 from rio_tiler.constants import MAX_THREADS
-from rio_tiler.io import COGReader
+from rio_tiler.io import Reader
 from rio_tiler.models import ImageData
 from rio_tiler.tasks import create_tasks
 
@@ -50,7 +50,7 @@ def load_url(
     }
 
     # Get metadata from COG to set bbox
-    with COGReader(url) as cog:
+    with Reader(url) as cog:
         item["bbox"] = [float(x) for x in cog.bounds]
 
     # Create the tasks
@@ -108,6 +108,7 @@ class LazyZarrRasterStack(Dict[str, ImageData]):
 
         Returns:
             ImageData: Multi-band image with all spectral bands for this time
+
         """
         # Get spatial extent from options or use reader's full bounds
         spatial_extent = self._options.get("spatial_extent")
@@ -137,6 +138,14 @@ class LazyZarrRasterStack(Dict[str, ImageData]):
 
         # Use the reader's part() method to load data for all variables at this time
         # by selecting the time dimension
+        width: int | None = None
+        if w := self._options.get("width"):
+            width = int(w)
+
+        height: int | None = None
+        if h := self._options.get("height"):
+            height = int(h)
+
         img = self._reader.part(
             bbox=bbox,
             bounds_crs=crs,
@@ -144,8 +153,8 @@ class LazyZarrRasterStack(Dict[str, ImageData]):
             variables=self._variables,
             sel=[f"time={time_key}"] if self.__len__() > 1 else None,
             method=self._options.get("method", "nearest"),
-            width=int(self._options.get("width")),
-            height=int(self._options.get("height"))
+            width=width,
+            height=height,
         )
 
         return img
@@ -195,7 +204,7 @@ def load_zarr(
     width: Optional[int] = None,
     height: Optional[int] = None,
     options: Optional[Dict] = None,
-) -> RasterStack:
+) -> LazyZarrRasterStack:
     """Load data from a Zarr store.
 
     Args:
@@ -463,7 +472,7 @@ def _handle_raster_geotiff(data: Dict[str, ImageData]) -> ImageData:
     }
 
     # Add any metadata from the original images
-    for i, (key, img) in enumerate(data.items()):  # noqa: B007
+    for i, (_, img) in enumerate(data.items()):  # noqa: B007
         if img.metadata:
             combined_metadata[f"band_{i}_metadata"] = img.metadata
 
@@ -522,5 +531,6 @@ def save_result(
         if format.lower() in ["tiff", "gtiff"]:
             combined_img = _handle_raster_geotiff(data)
             return _save_single_result(combined_img, format, options)
+
     # Otherwise, save as a single result
     return _save_single_result(data, format, options)
