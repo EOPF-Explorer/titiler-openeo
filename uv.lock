@@ -2619,7 +2619,7 @@ wheels = [
 [[package]]
 name = "titiler-eopf"
 version = "0.1.0"
-source = { git = "https://github.com/EOPF-Explorer/titiler-eopf.git#2033c2bafa1c5925b21eb5dc5b611c188a9d92d9" }
+source = { git = "https://github.com/EOPF-Explorer/titiler-eopf.git#61c402cf3d755a203c1a7d5ccc63cf5f70ef7697" }
 dependencies = [
     { name = "obstore" },
     { name = "orjson" },
